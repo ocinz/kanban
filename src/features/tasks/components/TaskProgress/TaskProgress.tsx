@@ -2,6 +2,7 @@ import { useRecoilValue } from "recoil";
 import { notStartedTasksSelector, inProgressTasksSelector, waitingTasksSelector, completedTasksSelector } from "../../TaskSelectors";
 import TaskColumn from "./TaskColumn";
 import type { Task, CSSProperties } from "../../../../types";
+import { TASK_PROGRESS_STATUS } from "../../../../constants/app";
 
 const TaskProgress = (): JSX.Element => {
   const notStartedTasks: Task[] = useRecoilValue(notStartedTasksSelector);
@@ -16,10 +17,10 @@ const TaskProgress = (): JSX.Element => {
     <div style={styles.container}>
       <h1 style={styles.heading}>Task Progress</h1>
       <div style={styles.taskCategories}>
-        <TaskColumn columnTitle="Not Started" tasks={notStartedTasks} />
-        <TaskColumn columnTitle="In Progress" tasks={inProgressTasks} />
-        <TaskColumn columnTitle="In Review / Waiting" tasks={waitingTasks} />
-        <TaskColumn columnTitle="Completed" tasks={completedTasks} />
+        <TaskColumn columnTitle={TASK_PROGRESS_STATUS.NOT_STARTED} tasks={notStartedTasks} />
+        <TaskColumn columnTitle={TASK_PROGRESS_STATUS.IN_PROGRESS} tasks={inProgressTasks} />
+        <TaskColumn columnTitle={TASK_PROGRESS_STATUS.WAITING} tasks={waitingTasks} />
+        <TaskColumn columnTitle={TASK_PROGRESS_STATUS.COMPLETED} tasks={completedTasks} />
       </div>
     </div>
   );
