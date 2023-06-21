@@ -19,3 +19,29 @@ export const completedTasksSelector = selector<Task[]>({
     });
   },
 });
+
+export const notStartedTasksSelector = selector<Task[]>({
+  key: "not_Started_Tasks",
+  get: ({ get }) => {
+    return get(tasksState).filter((task) => {
+      return task.progressOrder === 1;
+    });
+  },
+});
+
+export const inProgressTasksSelector = selector<Task[]>({
+  key: "in_Progress_Tasks",
+  get: ({ get }) => {
+    return get(tasksState).filter((task) => {
+      return task.progressOrder === 2;
+    });
+  },
+});
+export const waitingTasksSelector = selector<Task[]>({
+  key: "waiting_Tasks",
+  get: ({ get }) => {
+    return get(tasksState).filter((task) => {
+      return task.progressOrder === 3;
+    });
+  },
+});
