@@ -27,6 +27,7 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
   const { completeTask } = useTasksAction();
+
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>

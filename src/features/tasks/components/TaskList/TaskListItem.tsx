@@ -33,6 +33,7 @@ const getProgressCategory = (progressOrder: number): string => {
 
 const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
   const { completeTask } = useTasksAction();
+
   return (
     <div style={styles.tableBody}>
       <div style={styles.tableBodyTaskTitle}>
