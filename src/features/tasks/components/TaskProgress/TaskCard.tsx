@@ -1,8 +1,7 @@
 import React from "react";
 import type { Task, CSSProperties } from "../../../../types";
 import { TASK_PROGRESS_ID } from "../../../../constants/app";
-import { useRecoilState } from "recoil";
-import { tasksState } from "../../TaskAtoms";
+import { useTasksAction } from "../../hooks/Tasks";
 
 interface TaskCardProps {
   task: Task;
@@ -27,12 +26,7 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 };
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  const [tasks, setTasks] = useRecoilState<Task[]>(tasksState);
-
-  const completeTask = (taskId: number): void => {
-    const updatedTasks: Task[] = tasks.map((task) => (task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task));
-    setTasks(updatedTasks);
-  };
+  const { completeTask } = useTasksAction();
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>
