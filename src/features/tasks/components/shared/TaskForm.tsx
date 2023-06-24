@@ -1,25 +1,32 @@
 import { useState } from "react";
-import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS, TASK_MODAL_TYPE } from "../../../../constants/app";
-import type { CSSProperties } from "../../../../types";
-import { useTasksAction } from "../../hooks/Tasks";
 import type { Dispatch, SetStateAction } from "react";
+import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS, TASK_MODAL_TYPE } from "../../../../constants/app";
+import type { Task, CSSProperties } from "../../../../types";
+import { useTasksAction } from "../../hooks/Tasks";
 
 interface TaskFormProps {
   type: string;
   defaultProgressOrder: number;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  setIsMenuOpen?: Dispatch<SetStateAction<boolean>>;
+  task?: Task;
 }
 
-const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen }: TaskFormProps): JSX.Element => {
-  const [title, setTitle] = useState<string>("");
-  const [detail, setDetail] = useState<string>("");
-  const [dueDate, setDueDate] = useState<string>("");
+const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen, setIsMenuOpen, task }: TaskFormProps): JSX.Element => {
+  const [title, setTitle] = useState<string>(task !== undefined && type === TASK_MODAL_TYPE.EDIT ? task.title : "");
+  const [detail, setDetail] = useState<string>(task !== undefined && type === TASK_MODAL_TYPE.EDIT ? task.detail : "");
+  const [dueDate, setDueDate] = useState<string>(task !== undefined && type === TASK_MODAL_TYPE.EDIT ? task.dueDate : "");
   const [progressOrder, setProgressOrder] = useState<number>(defaultProgressOrder);
-  const { addTask } = useTasksAction();
+
+  const { addTask, editTask } = useTasksAction();
 
   const handleSubmit = (): void => {
     if (type === TASK_MODAL_TYPE.ADD) {
       addTask(title, detail, dueDate, progressOrder);
+      setIsModalOpen(false);
+    } else if (task !== undefined && type === TASK_MODAL_TYPE.EDIT && setIsMenuOpen !== undefined) {
+      editTask(task.id, title, detail, dueDate, progressOrder);
+      setIsMenuOpen(false);
       setIsModalOpen(false);
     }
   };

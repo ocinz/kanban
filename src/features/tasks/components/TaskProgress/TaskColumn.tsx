@@ -1,8 +1,8 @@
+import { useState } from "react";
 import TaskCard from "./TaskCard";
 import type { Task, CSSProperties } from "../../../../types";
-import { useState } from "react";
 import TaskModal from "../shared/TaskModal";
-import { TASK_PROGRESS_ID, TASK_MODAL_TYPE } from "../../../../constants/app";
+import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS, TASK_MODAL_TYPE } from "../../../../constants/app";
 
 interface TaskColumnProps {
   columnTitle: string;
@@ -11,6 +11,21 @@ interface TaskColumnProps {
 
 const TaskColumn = ({ columnTitle, tasks }: TaskColumnProps): JSX.Element => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const getProgressCategory = (progressStatus: string): number => {
+    switch (progressStatus) {
+      case TASK_PROGRESS_STATUS.NOT_STARTED:
+        return TASK_PROGRESS_ID.NOT_STARTED;
+      case TASK_PROGRESS_STATUS.IN_PROGRESS:
+        return TASK_PROGRESS_ID.IN_PROGRESS;
+      case TASK_PROGRESS_STATUS.WAITING:
+        return TASK_PROGRESS_ID.WAITING;
+      case TASK_PROGRESS_STATUS.COMPLETED:
+        return TASK_PROGRESS_ID.COMPLETED;
+      default:
+        return TASK_PROGRESS_ID.NOT_STARTED;
+    }
+  };
 
   return (
     <div style={styles.categoryColumn}>
@@ -31,7 +46,7 @@ const TaskColumn = ({ columnTitle, tasks }: TaskColumnProps): JSX.Element => {
           return <TaskCard key={task.id} task={task} />;
         })}
       </div>
-      {isModalOpen && <TaskModal headingTitle="Add your task" setIsModalOpen={setIsModalOpen} type={TASK_MODAL_TYPE.ADD} defaultProgressOrder={TASK_PROGRESS_ID.NOT_STARTED} />}
+      {isModalOpen && <TaskModal headingTitle="Add your task" type={TASK_MODAL_TYPE.ADD} setIsModalOpen={setIsModalOpen} defaultProgressOrder={getProgressCategory(columnTitle)} />}
     </div>
   );
 };

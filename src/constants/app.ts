@@ -16,3 +16,8 @@ export const TASK_MODAL_TYPE = {
   ADD: "add",
   EDIT: "edit",
 };
+
+export const MODAL_HEADING = {
+  ADD: "Add your task",
+  EDIT: "Edit your task",
+};

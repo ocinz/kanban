@@ -1,4 +1,5 @@
-import React from "react";
+import { useState } from "react"; // useState ditambahkan
+import TaskMenu from "../shared/TaskMenu";
 import type { Task, CSSProperties } from "../../../../types";
 import { TASK_PROGRESS_ID } from "../../../../constants/app";
 import { useTasksAction } from "../../hooks/Tasks";
@@ -6,6 +7,7 @@ import { useTasksAction } from "../../hooks/Tasks";
 interface TaskCardProps {
   task: Task;
 }
+
 const getIconStyle = (progressOrder: number): React.CSSProperties => {
   const color: "#55C89F" | "#C5C5C5" = progressOrder === TASK_PROGRESS_ID.COMPLETED ? "#55C89F" : "#C5C5C5";
 
@@ -17,8 +19,9 @@ const getIconStyle = (progressOrder: number): React.CSSProperties => {
     fontSize: "28px",
   };
 };
+
 const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
-  const justifyContentValue: "flex-end" | "space-between" = progressOrder === 1 ? "flex-end" : "space-between";
+  const justifyContentValue: "flex-end" | "space-between" = progressOrder === TASK_PROGRESS_ID.NOT_STARTED ? "flex-end" : "space-between";
   return {
     display: "flex",
     justifyContent: justifyContentValue,
@@ -27,6 +30,7 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
   const { completeTask, moveTaskCard } = useTasksAction();
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
     <div style={styles.taskCard}>
@@ -40,7 +44,13 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
         >
           check_circle
         </div>
-        <div className="material-icons" style={styles.menuIcon}>
+        <div
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true);
+          }}
+        >
           more_vert
         </div>
       </div>
@@ -54,25 +64,26 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
       <div style={getArrowPositionStyle(task.progressOrder)}>
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
           <button
-            className="material-icons"
-            onClick={(): void => {
+            onClick={() => {
               moveTaskCard(task.id, -1);
             }}
+            className="material-icons"
           >
             chevron_left
           </button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
           <button
-            className="material-icons"
-            onClick={(): void => {
+            onClick={() => {
               moveTaskCard(task.id, 1);
             }}
+            className="material-icons"
           >
             chevron_right
           </button>
         )}
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen} task={task} />}
     </div>
   );
 };

@@ -1,9 +1,13 @@
+import { useState } from "react"; // useState ditambahkan
+import TaskMenu from "../shared/TaskMenu";
 import type { Task, CSSProperties } from "../../../../types";
-import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS } from "../../../../constants/app";
+import { TASK_PROGRESS_STATUS, TASK_PROGRESS_ID } from "../../../../constants/app";
 import { useTasksAction } from "../../hooks/Tasks";
+
 interface TaskListItemProps {
   task: Task;
 }
+
 const getIconStyle = (progressOrder: number): React.CSSProperties => {
   const color: "#55C89F" | "#C5C5C5" = progressOrder === TASK_PROGRESS_ID.COMPLETED ? "#55C89F" : "#C5C5C5";
 
@@ -16,6 +20,7 @@ const getIconStyle = (progressOrder: number): React.CSSProperties => {
     marginRight: "6px",
   };
 };
+
 const getProgressCategory = (progressOrder: number): string => {
   switch (progressOrder) {
     case TASK_PROGRESS_ID.NOT_STARTED:
@@ -33,16 +38,17 @@ const getProgressCategory = (progressOrder: number): string => {
 
 const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
   const { completeTask } = useTasksAction();
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
     <div style={styles.tableBody}>
       <div style={styles.tableBodyTaskTitle}>
         <span
           className="material-icons"
+          style={getIconStyle(task.progressOrder)}
           onClick={(): void => {
             completeTask(task.id);
           }}
-          style={getIconStyle(task.progressOrder)}
         >
           check_circle
         </span>
@@ -52,8 +58,17 @@ const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
       <div style={styles.tableBodyDueDate}>{task.dueDate}</div>
       <div style={styles.tableBodyprogress}>{getProgressCategory(task.progressOrder)}</div>
       <div>
-        <span className="material-icons">more_horiz</span>
+        <span
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true);
+          }}
+        >
+          more_horiz
+        </span>
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen} task={task} />}
     </div>
   );
 };

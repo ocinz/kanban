@@ -7,7 +7,8 @@ interface useTaskActionType {
   completeTask: (taskId: number) => void;
   moveTaskCard: (taskId: number, directionNumber: 1 | -1) => void;
   addTask: (title: string, detail: string, dueDate: string, progressOrder: number) => void;
-  editTask: (id: number, title: string, detail: string, dueDate: string, progressOrder: number) => void;
+  editTask: (taskId: number, title: string, detail: string, dueDate: string, progressOrder: number) => void;
+  deleteTask: (taskId: number) => void;
 }
 
 export const useTasksAction = (): useTaskActionType => {
@@ -19,7 +20,7 @@ export const useTasksAction = (): useTaskActionType => {
   };
 
   const moveTaskCard = (taskId: number, directionNumber: 1 | -1): void => {
-    const updatedTasks: Task[] = tasks.map((task) => (taskId == task.id ? { ...task, progressOrder: task.progressOrder + directionNumber } : task));
+    const updatedTasks: Task[] = tasks.map((task) => (task.id === taskId ? { ...task, progressOrder: task.progressOrder + directionNumber } : task));
     setTasks(updatedTasks);
   };
 
@@ -34,15 +35,24 @@ export const useTasksAction = (): useTaskActionType => {
     setTasks([...tasks, newTask]);
   };
 
-  const editTask = (id: number, title: string, detail: string, dueDate: string, progressOrder: number): void => {
-    tasks.map((task) => {
-      if (task.id == id) {
-        task.title = title;
-        task.detail = detail;
-        task.dueDate = dueDate;
-        task.progressOrder = progressOrder;
-      }
-    });
+  const editTask = (taskId: number, title: string, detail: string, dueDate: string, progressOrder: number): void => {
+    const updatedTasks: Task[] = tasks.map((task) =>
+      task.id === taskId
+        ? {
+            ...task,
+            title,
+            detail,
+            dueDate,
+            progressOrder,
+          }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
+
+  const deleteTask = (taskId: number): void => {
+    const updatedTasks: Task[] = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
   };
 
   return {
@@ -50,5 +60,6 @@ export const useTasksAction = (): useTaskActionType => {
     moveTaskCard,
     addTask,
     editTask,
+    deleteTask,
   };
 };
